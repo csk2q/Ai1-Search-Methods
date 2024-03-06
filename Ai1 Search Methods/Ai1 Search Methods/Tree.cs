@@ -1,3 +1,5 @@
+using Ai1_Search_Methods.SearchMethods;
+
 namespace Ai1_Search_Methods;
 
 public class Node()
@@ -13,7 +15,7 @@ public class Node()
         Name = name;
     }
 
-    public virtual Node AddChild(string name)
+    public Node AddChild(string name)
     {
         var node = new Node
         {
@@ -30,24 +32,3 @@ public class Node()
         return Name;
     }
 }
-
-class StarNode : Node
-{
-    // g(n)
-    float costToThisNode = 0;
-
-    public override StarNode AddChild(string name)
-    {
-        var node = (StarNode)base.AddChild(name);
-
-        //node.costToThisNode = this.costToThisNode + 
-
-        return default;
-    }
-
-}
-
-/*public class Tree
-{
-    
-}*/

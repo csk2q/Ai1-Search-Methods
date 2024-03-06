@@ -42,6 +42,6 @@ public abstract class SearchMethod()
         return closestCity;
     }
 
-    protected static float distance(Vector2 a, Vector2 b) => (a - b).Length();
-    protected static float distanceBetween(string a, string b) => distance(coordinates[a], coordinates[b]);
+    public static float distance(Vector2 a, Vector2 b) => (a - b).Length();
+    public static float distanceBetween(string a, string b) => distance(coordinates[a], coordinates[b]);
 }
