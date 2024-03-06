@@ -11,7 +11,6 @@ public class BestFirstSearch(Dictionary<string, List<string>> adjacencies, Dicti
             return [start];
 
         // Keep and open list of frontier nodes and always pick the closest option
-        //TODO REFACTOR - Copy pasted from BFS
 
         Node root = new Node(start);
         Node? goalNode = null;

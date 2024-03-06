@@ -33,9 +33,13 @@ internal class Program
         //bfs.PrintRunSearch("Anthony", "Attica");
         //bfs.PrintRunSearch("Leon", "Manhattan");
 
-        Console.WriteLine("\nBestFS");
-        var bestFS = new BestFirstSearch(adjacencies, coordinates);
-        bestFS.PrintRunSearch("Leon", "Manhattan");
+        //Console.WriteLine("\nBestFS");
+        //var bestFS = new BestFirstSearch(adjacencies, coordinates);
+        //bestFS.PrintRunSearch("Leon", "Manhattan");
+
+        Console.WriteLine("\nID-DFS");
+        var idDFS = new IDDFS(adjacencies, coordinates);
+        idDFS.PrintRunSearch("Leon", "Manhattan");
 
 
 

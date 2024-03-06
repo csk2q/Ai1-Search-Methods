@@ -24,6 +24,11 @@ public class Node()
         Children.Add(node);
         return node;
     }
+
+    public override string ToString()
+    {
+        return Name;
+    }
 }
 
 public class Tree
