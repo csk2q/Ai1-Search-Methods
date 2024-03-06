@@ -14,7 +14,7 @@ public class IDDFS(Dictionary<string, List<string>> adjacencies, Dictionary<stri
 
         int curMaxDepth = DepthStepSize;
 
-        Node root = new Node(start);
+        Node root = new(start);
         Node? goalNode = null;
         HashSet<string> seenNodes = [start];
         LinkedList<Node> leafNodes = [];
