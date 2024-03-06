@@ -1,9 +1,10 @@
 using System.Diagnostics;
 using System.Numerics;
+using static Ai1_Search_Methods.GlobalData;
 
 namespace Ai1_Search_Methods.SearchMethods;
 
-public class BestFirstSearch(Dictionary<string, List<string>> adjacencies, Dictionary<string, Vector2> coordinates) : SearchMethod(adjacencies, coordinates)
+public class BestFirstSearch() : SearchMethod()
 {
     public override string[] RunSearch(string start, string goal)
     {
@@ -12,7 +13,7 @@ public class BestFirstSearch(Dictionary<string, List<string>> adjacencies, Dicti
 
         // Keep and open list of frontier nodes and always pick the closest option
 
-        Node root = new Node(start);
+        Node root = new(start);
         Node? goalNode = null;
         HashSet<string> seenNodes = [start];
         SortedList<float, Node> leafNodes = [];
@@ -21,23 +22,23 @@ public class BestFirstSearch(Dictionary<string, List<string>> adjacencies, Dicti
         while (goalNode is null)
         {
 
-            Node closestNode = leafNodes.GetValueAtIndex(0);
+            Node closestToGoalNode = leafNodes.GetValueAtIndex(0);
             leafNodes.RemoveAt(0);
 
             //bool didAddNode = false;
 
-            foreach (var adjNodeName in adjacencies[closestNode.Name])
+            foreach (var adjNodeName in adjacencies[closestToGoalNode.Name])
             {
 
                 if (adjNodeName == goal)
                 {
-                    goalNode = closestNode.AddChild(adjNodeName);
+                    goalNode = closestToGoalNode.AddChild(adjNodeName);
                     break;
                 }
                 else if (!seenNodes.Contains(adjNodeName))
                 {
                     //didAddNode = true;
-                    leafNodes.Add(distanceBetween(adjNodeName, goal), closestNode.AddChild(adjNodeName));
+                    leafNodes.Add(distanceBetween(adjNodeName, goal), closestToGoalNode.AddChild(adjNodeName));
                     seenNodes.Add(adjNodeName);
                 }
             }
@@ -59,7 +60,7 @@ public class BestFirstSearch(Dictionary<string, List<string>> adjacencies, Dicti
         return path.ToArray();
     }
 
-    private string closestAdj(string name)
+/*    private string closestAdj(string name)
     {
         var adj = adjacencies[name];
         var location = coordinates[name];
@@ -87,6 +88,6 @@ public class BestFirstSearch(Dictionary<string, List<string>> adjacencies, Dicti
     }
 
     private static float distance(Vector2 a, Vector2 b) => (a - b).Length();
-    private float distanceBetween(string a, string b) => distance(coordinates[a], coordinates[b]);
+    private float distanceBetween(string a, string b) => distance(coordinates[a], coordinates[b]);*/
 
 }

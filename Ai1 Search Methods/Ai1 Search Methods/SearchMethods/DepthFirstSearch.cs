@@ -1,9 +1,9 @@
 using System.Numerics;
+using static Ai1_Search_Methods.GlobalData;
 
 namespace Ai1_Search_Methods.SearchMethods;
 
-public class DepthFirstSearch(Dictionary<string, List<string>> adjacencies, Dictionary<string, Vector2> coordinates)
-    : SearchMethod(adjacencies, coordinates)
+public class DepthFirstSearch() : SearchMethod()
 {
     public override string[] RunSearch(string start, string goal)
     {

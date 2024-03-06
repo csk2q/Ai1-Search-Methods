@@ -1,15 +1,16 @@
 using System.Numerics;
+using static Ai1_Search_Methods.GlobalData;
 
 namespace Ai1_Search_Methods.SearchMethods;
 
-public class BreathFirstSearch(Dictionary<string, List<string>> adjacencies, Dictionary<string, Vector2> coordinates) : SearchMethod(adjacencies, coordinates)
+public class BreathFirstSearch() : SearchMethod()
 {
     public override string[] RunSearch(string start, string goal)
     {
         if (start == goal)
             return [start];
         
-        Node root = new Node(start);
+        Node root = new(start);
         Node? goalNode = null;
         HashSet<string> seenNodes = [start];
         List<Node> leafNodes = [root];

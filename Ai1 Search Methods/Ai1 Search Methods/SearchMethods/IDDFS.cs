@@ -1,9 +1,9 @@
-using System.Diagnostics;
 using System.Numerics;
+using static Ai1_Search_Methods.GlobalData;
 
 namespace Ai1_Search_Methods.SearchMethods;
 
-public class IDDFS(Dictionary<string, List<string>> adjacencies, Dictionary<string, Vector2> coordinates) : SearchMethod(adjacencies, coordinates)
+public class IDDFS() : SearchMethod()
 {
     const int DepthStepSize = 3; //Note: depth is counted up from zero.
 
@@ -11,6 +11,9 @@ public class IDDFS(Dictionary<string, List<string>> adjacencies, Dictionary<stri
     public override string[] RunSearch(string start, string goal)
     {
         //Search exhaustively to a depth, then increase depth and restart search
+
+        if (start == goal)
+            return [start];
 
         int curMaxDepth = DepthStepSize;
 

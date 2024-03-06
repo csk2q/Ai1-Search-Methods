@@ -4,8 +4,8 @@ public class Node()
 {
     public int depth = 0;
     
-    public string Name;
-    public Node Parent = null;
+    public string Name = "Name not set";
+    public Node? Parent = null;
     public List<Node> Children = [];
 
     public Node(string name) : this()
@@ -13,7 +13,7 @@ public class Node()
         Name = name;
     }
 
-    public Node AddChild(string name)
+    public virtual Node AddChild(string name)
     {
         var node = new Node
         {
@@ -31,7 +31,23 @@ public class Node()
     }
 }
 
-public class Tree
+class StarNode : Node
+{
+    // g(n)
+    float costToThisNode = 0;
+
+    public override StarNode AddChild(string name)
+    {
+        var node = (StarNode)base.AddChild(name);
+
+        //node.costToThisNode = this.costToThisNode + 
+
+        return default;
+    }
+
+}
+
+/*public class Tree
 {
     
-}
+}*/

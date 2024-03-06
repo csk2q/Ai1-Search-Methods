@@ -1,12 +1,14 @@
-﻿using System.Numerics;
+﻿using System.Collections.Frozen;
+using System.Collections.Immutable;
+using System.Numerics;
 using Ai1_Search_Methods.SearchMethods;
+using static Ai1_Search_Methods.GlobalData;
 
 namespace Ai1_Search_Methods;
 
 internal class Program
 {
-    Dictionary<string, List<string>> adjacencies = [];
-    Dictionary<string, Vector2> coordinates = [];
+    
 
     static void Main(string[] args) => new Program().RunMain();
     void RunMain()
@@ -15,7 +17,7 @@ internal class Program
         LoadDataFiles();
 
 
-        // var dfs = new BreathFirstSearch(adjacencies, coordinates);
+        // var dfs = new BreathFirstSearch();
         // foreach (var start in coordinates.Keys)
         //     foreach (var end in coordinates.Keys)
         //     {
@@ -24,21 +26,21 @@ internal class Program
 
 
         // Console.WriteLine("DFS");
-        // var dfs = new BreathFirstSearch(adjacencies, coordinates);
+        // var dfs = new BreathFirstSearch();
         //dfs.PrintRunSearch("Anthony", "Attica");
         //dfs.PrintRunSearch("Leon", "Manhattan");
 
         //Console.WriteLine("\nBFS");
-        //var bfs = new BreathFirstSearch(adjacencies, coordinates);
+        //var bfs = new BreathFirstSearch();
         //bfs.PrintRunSearch("Anthony", "Attica");
         //bfs.PrintRunSearch("Leon", "Manhattan");
 
         //Console.WriteLine("\nBestFS");
-        //var bestFS = new BestFirstSearch(adjacencies, coordinates);
+        //var bestFS = new BestFirstSearch();
         //bestFS.PrintRunSearch("Leon", "Manhattan");
 
         Console.WriteLine("\nID-DFS");
-        var idDFS = new IDDFS(adjacencies, coordinates);
+        var idDFS = new IDDFS();
         idDFS.PrintRunSearch("Leon", "Manhattan");
 
 
@@ -47,6 +49,9 @@ internal class Program
 
     void LoadDataFiles()
     {
+        Dictionary<string, List<string>> adjacencies = [];
+        Dictionary<string, Vector2> coordinates = [];
+
         //Load adjacencies
         var fileAdjLines = File.ReadAllLines("Adjacencies.txt");
         foreach (var line in fileAdjLines)
@@ -80,6 +85,14 @@ internal class Program
             coordinates.Add(data[0], new Vector2(float.Parse(data[1]), float.Parse(data[2])));
         }
         
+        GlobalData.adjacencies = adjacencies.ToFrozenDictionary();
+        GlobalData.coordinates = coordinates.ToFrozenDictionary();
         
     }
+}
+
+internal class GlobalData
+{
+    public static FrozenDictionary<string, List<string>> adjacencies;
+    public static FrozenDictionary<string, Vector2> coordinates;
 }
