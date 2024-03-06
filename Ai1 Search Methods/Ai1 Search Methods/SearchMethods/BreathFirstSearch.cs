@@ -16,33 +16,37 @@ public class BreathFirstSearch(Dictionary<string, List<string>> adjacencies, Dic
 
         while (goalNode is null)
         {
-            List<Node> newLeafs = [];
+            List<Node> newLeaves = [];
             foreach (Node leafNode in leafNodes)
             {
                 var adjNodes = adjacencies[leafNode.Name];
-                bool addedNodes = false;
-                foreach (var adjNode in adjNodes)
+                //bool addedNodes = false;
+                foreach (var adjNodeName in adjNodes)
                 {
-                    if (!seenNodes.Contains(adjNode))
+                    
+                    if (!seenNodes.Contains(adjNodeName))
                     {
-                        addedNodes = true;
-                        newLeafs.Add(leafNode.AddChild(adjNode));
+                        //addedNodes = true;
+                        newLeaves.Add(leafNode.AddChild(adjNodeName));
+                        seenNodes.Add(adjNodeName);
                     }
 
-                    if (adjNode == goal)
+                    if (adjNodeName == goal)
                     {
-                        goalNode = newLeafs.Last();
+                        goalNode = newLeaves.Last();
                         break;
                     }
+
+
                 }
 
-                if (!addedNodes)
-                    Console.WriteLine("BFS found a dead end.");
+                //if (!addedNodes)
+                    //Console.WriteLine("BFS found a dead end.");
                 
                 if(goalNode is not null)
                     break;
             }
-            leafNodes = newLeafs;
+            leafNodes = newLeaves;
         }
 
         LinkedList<string> path = [];

@@ -21,21 +21,21 @@ internal class Program
         //     {
         //         Console.WriteLine(string.Join("->", dfs.RunSearch(start, end)));
         //     }
-        
-        
+
+
         // Console.WriteLine("DFS");
-        // Console.WriteLine(string.Join("->", dfs.RunSearch("Anthony", "Attica")));
-        // Console.WriteLine(string.Join("->", dfs.RunSearch("Leon", "Manhattan")));
-        
-        // var bfs = new BreathFirstSearch(adjacencies, coordinates);
-        // Console.WriteLine("\nBFS");
-        // Console.WriteLine(string.Join("->", bfs.RunSearch("Anthony", "Attica")));
-        // Console.WriteLine(string.Join("->", bfs.RunSearch("Leon", "Manhattan")));
+        // var dfs = new BreathFirstSearch(adjacencies, coordinates);
+        //dfs.PrintRunSearch("Anthony", "Attica");
+        //dfs.PrintRunSearch("Leon", "Manhattan");
 
+        //Console.WriteLine("\nBFS");
+        //var bfs = new BreathFirstSearch(adjacencies, coordinates);
+        //bfs.PrintRunSearch("Anthony", "Attica");
+        //bfs.PrintRunSearch("Leon", "Manhattan");
+
+        Console.WriteLine("\nBestFS");
         var bestFS = new BestFirstSearch(adjacencies, coordinates);
-        Console.WriteLine(string.Join("->", bestFS.RunSearch("Leon", "Manhattan")));
-        
-
+        bestFS.PrintRunSearch("Leon", "Manhattan");
 
 
 

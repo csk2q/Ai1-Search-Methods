@@ -9,20 +9,55 @@ public class BestFirstSearch(Dictionary<string, List<string>> adjacencies, Dicti
     {
         if (start == goal)
             return [start];
-        
-        // Keep and open list of frontire nodes and allways pick the closest option
+
+        // Keep and open list of frontier nodes and always pick the closest option
         //TODO REFACTOR - Copy pasted from BFS
 
         Node root = new Node(start);
         Node? goalNode = null;
         HashSet<string> seenNodes = [start];
-        List<Node> leafNodes = [root];
+        SortedList<float, Node> leafNodes = [];
+        leafNodes.Add(distanceBetween(start, goal), root);
 
         while (goalNode is null)
         {
+
+            Node closestNode = leafNodes.GetValueAtIndex(0);
+            leafNodes.RemoveAt(0);
+
+            //bool didAddNode = false;
+
+            foreach (var adjNodeName in adjacencies[closestNode.Name])
+            {
+
+                if (adjNodeName == goal)
+                {
+                    goalNode = closestNode.AddChild(adjNodeName);
+                    break;
+                }
+                else if (!seenNodes.Contains(adjNodeName))
+                {
+                    //didAddNode = true;
+                    leafNodes.Add(distanceBetween(adjNodeName, goal), closestNode.AddChild(adjNodeName));
+                    seenNodes.Add(adjNodeName);
+                }
+            }
+
+            //if (!didAddNode)
+                //Console.WriteLine("BestFS found a dead end.");
+
+
         }
 
-        return path.ToArray(); // DEBUG RETURN
+        LinkedList<string> path = [];
+
+        for (Node? curNode = goalNode; curNode is not null; curNode = curNode.Parent)
+        {
+            path.AddFirst(curNode.Name);
+
+        }
+
+        return path.ToArray();
     }
 
     private string closestAdj(string name)
@@ -33,11 +68,11 @@ public class BestFirstSearch(Dictionary<string, List<string>> adjacencies, Dicti
         string closestCity = "none";
         float lowest = float.MaxValue;
 
-        
+
         int i = 0;
         foreach (var city in adjacencies[name])
         {
-            var diff = dist(location, coordinates[city]);
+            var diff = distance(location, coordinates[city]);
             if (diff < lowest)
             {
                 lowest = diff;
@@ -46,11 +81,13 @@ public class BestFirstSearch(Dictionary<string, List<string>> adjacencies, Dicti
 
             i++;
         }
-        
+
         Debug.Assert(closestCity != "none", "No city was found?");
 
         return closestCity;
     }
 
-    private static float dist(Vector2 a, Vector2 b) => (a - b).Length();
+    private static float distance(Vector2 a, Vector2 b) => (a - b).Length();
+    private float distanceBetween(string a, string b) => distance(coordinates[a], coordinates[b]);
+
 }

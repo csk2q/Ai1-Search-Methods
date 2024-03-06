@@ -13,4 +13,10 @@ public abstract class SearchMethod(Dictionary<string, List<string>> adjacencies,
     protected Dictionary<string, Vector2> coordinates = coordinates;
     
     public abstract string[] RunSearch(string start, string goal);
+    public string[] PrintRunSearch(string start, string goal)
+    {
+        var result = RunSearch(start, goal);
+        Console.WriteLine(string.Join("->", result));
+        return result;
+    }
 }
