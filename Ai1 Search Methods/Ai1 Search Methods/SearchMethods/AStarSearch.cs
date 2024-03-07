@@ -9,6 +9,7 @@ public class AStarSearch() : SearchMethod()
     string goal = "not yet set";
 
     // Based off of the pseudocode from: https://brilliant.org/wiki/a-star-search/
+    // https://www.youtube.com/watch?v=ySN5Wnu88nE
     public override string[] RunSearch(string start, string goal)
     {
         this.goal = goal;

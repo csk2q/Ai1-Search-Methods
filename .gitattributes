@@ -1,6 +1,6 @@
 # Auto detect text files and perform LF normalization
-# * text=Unset
- * text=auto
+ * text=Unset
+# * text=auto
 
 
 
