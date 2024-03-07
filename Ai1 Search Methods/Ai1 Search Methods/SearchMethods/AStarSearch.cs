@@ -6,13 +6,13 @@ namespace Ai1_Search_Methods.SearchMethods;
 
 public class AStarSearch() : SearchMethod()
 {
-    string goal = "not yet set";
+    string goalNodeName = "not yet set";
+    private const bool debugPrints = false;
 
-    // Based off of the pseudocode from: https://brilliant.org/wiki/a-star-search/
-    // https://www.youtube.com/watch?v=ySN5Wnu88nE
+    // Based off of the pseudocode description from: https://www.youtube.com/watch?v=ySN5Wnu88nE
     public override string[] RunSearch(string start, string goal)
     {
-        this.goal = goal;
+        this.goalNodeName = goal;
 
         if (start == goal)
             return [start];
@@ -21,49 +21,74 @@ public class AStarSearch() : SearchMethod()
 
         StarNode root = new(start);
         StarNode? goalNode = null;
-        HashSet<string> seenNodes = [start];
-        SortedList<float, StarNode> leafNodes = [];
-        leafNodes.Add(distanceBetween(start, goal), root);
+        Dictionary<string, StarNode> seenNodes = new() { { start, root } };
+        PriorityQueue<StarNode, float> leafNodes = new();
+        leafNodes.Enqueue(root, Heuristic(root));
 
         while (goalNode is null)
         {
-
-            StarNode closestToGoalNode = leafNodes.GetValueAtIndex(0);
-            leafNodes.RemoveAt(0);
+            StarNode shortestNode = leafNodes.Dequeue();
+            if (debugPrints)
+                Console.WriteLine("Starting with " + shortestNode.Name);
 
             bool didAddNode = false;
 
-            foreach (var adjNodeName in adjacencies[closestToGoalNode.Name])
+            foreach (var adjNodeName in adjacencies[shortestNode.Name])
             {
+                if (debugPrints)
+                    Console.WriteLine("\tChecking adj " + adjNodeName);
+
                 //If goal
                 if (adjNodeName == goal)
                 {
+                    if (debugPrints)
+                        Console.WriteLine("\t\tFound goal!");
+
                     // Add goal to tree and return
-                    goalNode = closestToGoalNode.AddChild(adjNodeName);
+                    goalNode = shortestNode.AddChild(adjNodeName);
                     break;
                 }
 
                 // If have seen node before
-                if (seenNodes.Contains(adjNodeName))
+                if (seenNodes.TryGetValue(adjNodeName, out StarNode? adjNode))
                 {
+                    if (debugPrints)
+                        Console.Write("\t\tSeen node before...");
+
                     // Check if we found a shorter path
+                    if (shortestNode.costToThisNode < adjNode.costToThisNode)
+                    {
+                        // Update node cost and parent
+                        adjNode.costToThisNode =
+                            shortestNode.costToThisNode + distanceBetween(shortestNode.Name, adjNodeName);
+                        adjNode.Parent = shortestNode;
 
-
+                        if (debugPrints)
+                            Console.WriteLine("Shorter path found.");
+                    }
+                    else
+                    {
+                        if (debugPrints)
+                            Console.WriteLine("Path not shorter.");
+                    }
                 }
                 else // If have not seen node
                 {
+                    if (debugPrints)
+                        Console.WriteLine("\t\tThis is a new node.");
+
                     didAddNode = true;
-                    var newNode = closestToGoalNode.AddChild(adjNodeName);
-                    leafNodes.Add(Heuristic(newNode), newNode);
-                    seenNodes.Add(adjNodeName);
+                    var newNode = shortestNode.AddChild(adjNodeName);
+                    leafNodes.Enqueue(newNode, Heuristic(newNode));
+                    seenNodes.Add(adjNodeName, newNode);
                 }
             }
 
-            if (!didAddNode)
-                Console.WriteLine("AStar found a dead end.");
+
+            if (!didAddNode && debugPrints)
+                Console.WriteLine(
+                    $"AStar found a dead end. Node: {shortestNode.Name} Adjacencies: {string.Join(", ", adjacencies[shortestNode.Name])}");
             //Debug.Assert(didAddNode, "BestFS found a dead end.");
-
-
         }
 
         LinkedList<string> path = [];
@@ -71,7 +96,6 @@ public class AStarSearch() : SearchMethod()
         for (StarNode? curNode = goalNode; curNode is not null; curNode = curNode.Parent)
         {
             path.AddFirst(curNode.Name);
-
         }
 
         return path.ToArray();
@@ -81,12 +105,12 @@ public class AStarSearch() : SearchMethod()
     // h(node) = estimated cost *through* node to goal
     private float Heuristic(StarNode starNode)
     {
-        return starNode.costToThisNode + estCostToGoal(starNode.Name);
+        return starNode.costToThisNode + EstCostToGoal(starNode.Name);
     }
 
-    private float estCostToGoal(string nodeName)
+    private float EstCostToGoal(string nodeName)
     {
-        return distanceBetween(nodeName, goal);
+        return distanceBetween(nodeName, goalNodeName);
     }
 }
 

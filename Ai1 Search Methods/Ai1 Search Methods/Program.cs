@@ -39,9 +39,13 @@ internal class Program
         //var bestFS = new BestFirstSearch();
         //bestFS.PrintRunSearch("Leon", "Manhattan");
 
-        Console.WriteLine("\nID-DFS");
-        var idDFS = new IDDFS();
-        idDFS.PrintRunSearch("Leon", "Manhattan");
+        // Console.WriteLine("\nID-DFS");
+        // var idDFS = new IDDFS();
+        // idDFS.PrintRunSearch("Leon", "Manhattan");
+        
+        Console.WriteLine("\nA*");
+        var aStar = new AStarSearch();
+        aStar.PrintRunSearch("Leon", "Manhattan");
 
 
 
