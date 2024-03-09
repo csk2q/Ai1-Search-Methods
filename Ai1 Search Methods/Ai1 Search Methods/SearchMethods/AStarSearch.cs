@@ -1,3 +1,5 @@
+// #define DEBUG_PRINT
+
 using System.Diagnostics;
 using System.Numerics;
 using static Ai1_Search_Methods.GlobalData;
@@ -7,12 +9,12 @@ namespace Ai1_Search_Methods.SearchMethods;
 public class AStarSearch() : SearchMethod()
 {
     string goalNodeName = "not yet set";
-    private const bool debugPrints = false;
+    // private const bool debugPrints = false;
 
     // Based off of the pseudocode description from: https://www.youtube.com/watch?v=ySN5Wnu88nE
     public override string[] RunSearch(string start, string goal)
     {
-        this.goalNodeName = goal;
+        goalNodeName = goal;
 
         if (start == goal)
             return [start];
@@ -28,21 +30,26 @@ public class AStarSearch() : SearchMethod()
         while (goalNode is null)
         {
             StarNode shortestNode = leafNodes.Dequeue();
-            if (debugPrints)
+
+
+#if DEBUG_PRINT
                 Console.WriteLine("Starting with " + shortestNode.Name);
+#endif
 
             bool didAddNode = false;
 
             foreach (var adjNodeName in adjacencies[shortestNode.Name])
             {
-                if (debugPrints)
+#if DEBUG_PRINT
                     Console.WriteLine("\tChecking adj " + adjNodeName);
+#endif
 
                 //If goal
                 if (adjNodeName == goal)
                 {
-                    if (debugPrints)
+#if DEBUG_PRINT
                         Console.WriteLine("\t\tFound goal!");
+#endif
 
                     // Add goal to tree and return
                     goalNode = shortestNode.AddChild(adjNodeName);
@@ -52,30 +59,36 @@ public class AStarSearch() : SearchMethod()
                 // If have seen node before
                 if (seenNodes.TryGetValue(adjNodeName, out StarNode? adjNode))
                 {
-                    if (debugPrints)
-                        Console.Write("\t\tSeen node before...");
+                    // # No use to backtracking, it is never shorter. (At least in this dataset)
+                    /*// Check if we found a shorter path
+#if DEBUG_PRINT
+                                           Console.Write("\t\tSeen node before...");
+#endif
 
-                    // Check if we found a shorter path
                     if (shortestNode.costToThisNode < adjNode.costToThisNode)
                     {
+                        Debug.Assert(false, "FOUND A SHORTER PATH");
                         // Update node cost and parent
                         adjNode.costToThisNode =
                             shortestNode.costToThisNode + distanceBetween(shortestNode.Name, adjNodeName);
                         adjNode.Parent = shortestNode;
 
-                        if (debugPrints)
+#if DEBUG_PRINT
                             Console.WriteLine("Shorter path found.");
+#endif
                     }
                     else
                     {
-                        if (debugPrints)
+#if DEBUG_PRINT
                             Console.WriteLine("Path not shorter.");
-                    }
+#endif
+                    }*/
                 }
                 else // If have not seen node
                 {
-                    if (debugPrints)
+#if DEBUG_PRINT
                         Console.WriteLine("\t\tThis is a new node.");
+#endif
 
                     didAddNode = true;
                     var newNode = shortestNode.AddChild(adjNodeName);
@@ -85,9 +98,8 @@ public class AStarSearch() : SearchMethod()
             }
 
 
-            if (!didAddNode && debugPrints)
-                Console.WriteLine(
-                    $"AStar found a dead end. Node: {shortestNode.Name} Adjacencies: {string.Join(", ", adjacencies[shortestNode.Name])}");
+            // if (!didAddNode)
+            //     Console.WriteLine($"AStar found a dead end. Node: {shortestNode.Name} Adjacencies: {string.Join(", ", adjacencies[shortestNode.Name])}");
             //Debug.Assert(didAddNode, "BestFS found a dead end.");
         }
 
@@ -110,7 +122,8 @@ public class AStarSearch() : SearchMethod()
 
     private float EstCostToGoal(string nodeName)
     {
-        return distanceBetween(nodeName, goalNodeName);
+        //Over estimate distance
+        return distanceBetween(nodeName, goalNodeName) * (float)1.2;
     }
 }
 

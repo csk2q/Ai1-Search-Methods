@@ -16,7 +16,7 @@ public class BestFirstSearch() : SearchMethod()
         Node root = new(start);
         Node? goalNode = null;
         HashSet<string> seenNodes = [start];
-        SortedList<float, Node> leafNodes = [];
+        SortedList<float, Node> leafNodes = []; // TODO convert to PriorityQueue for speed
         leafNodes.Add(distanceBetween(start, goal), root);
 
         while (goalNode is null)
