@@ -16,7 +16,7 @@ public abstract class SearchMethod()
         return result;
     }
 
-    protected static string closestAdj(string name)
+    /*protected static string closestAdj(string name)
     {
         var location = coordinates[name];
 
@@ -40,7 +40,7 @@ public abstract class SearchMethod()
         Debug.Assert(closestCity != "none", "No city was found?");
 
         return closestCity;
-    }
+    }*/
 
     public static float distance(Vector2 a, Vector2 b) => (a - b).Length();
     public static float distanceBetween(string a, string b) => distance(coordinates[a], coordinates[b]);

@@ -19,15 +19,19 @@ internal class Program
     };
 
     static void Main(string[] args) => new Program().RunMain();
-
     void RunMain()
     {
         Console.Clear();
-        Console.WriteLine("Hello, search methods!\nLoading datafiles...");
+        Console.Write("Hello, search methods!\nLoading datafiles...");
         LoadDataFiles();
+        Console.WriteLine("Done");
+        
         
         var cityNames = coordinates.Keys.Sort();
         var selectCityPrompt = new SelectionPrompt<string>().AddChoices(cityNames);
+        
+        //Pre-warm the jit so the code runs faster.
+        WarmJit();
 
         do
         {
@@ -135,6 +139,18 @@ internal class Program
 
         GlobalData.adjacencies = adjacencies.ToFrozenDictionary();
         GlobalData.coordinates = coordinates.ToFrozenDictionary();
+    }
+
+    void WarmJit()
+    {
+        Console.Write("Warming jit...");
+        // For each search method
+        foreach (var method in searchMethods)
+        {
+            //Run a search and discard the result
+            _ = method.Value.RunSearch("Leon", "Manhattan");
+        }
+        Console.WriteLine("Done");
     }
 }
 

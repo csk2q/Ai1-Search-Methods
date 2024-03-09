@@ -19,23 +19,25 @@ public class DepthFirstSearch() : SearchMethod()
         while (path.Count > 0 && path.Peek() != goal)
         {
             var adjNodes = adjacencies[curNode];
-
             List<string> newAdjNodes = [];
 
+            //For each adjacent node
             foreach (var adjNode in adjNodes)
             {
-                //If we had not been here add to search.
+                //Add undiscovered nodes
                 if (!failedNodes.Contains(adjNode) && !path.Contains(adjNode))
                     newAdjNodes.Add(adjNode);
             }
 
             if (newAdjNodes.Count > 0)
             {
+                // Step forward
                 curNode = newAdjNodes[0];
                 path.Push(curNode);
             }
             else
             {
+                // Step back
                 failedNodes.Add(curNode);
                 path.Pop();
                 curNode = path.Peek();

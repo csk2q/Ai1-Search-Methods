@@ -21,44 +21,37 @@ public class BreathFirstSearch() : SearchMethod()
             foreach (Node leafNode in leafNodes)
             {
                 var adjNodes = adjacencies[leafNode.Name];
-                //bool addedNodes = false;
                 foreach (var adjNodeName in adjNodes)
                 {
-                    
+                    // Add new leaf nodes
                     if (!seenNodes.Contains(adjNodeName))
                     {
-                        //addedNodes = true;
                         newLeaves.Add(leafNode.AddChild(adjNodeName));
                         seenNodes.Add(adjNodeName);
                     }
 
+                    // Break out if we found our goal
                     if (adjNodeName == goal)
                     {
                         goalNode = newLeaves.Last();
                         break;
                     }
-
-
                 }
-
-                //if (!addedNodes)
-                    //Console.WriteLine("BFS found a dead end.");
                 
+                // Break out if we found our goal
                 if(goalNode is not null)
                     break;
             }
+            
+            // Update new leaf nodes
             leafNodes = newLeaves;
         }
 
+        //Travers node chain to start
         LinkedList<string> path = [];
-
         for (Node? curNode = goalNode; curNode is not null; curNode = curNode.Parent)
-        {
             path.AddFirst(curNode.Name);
-
-        }
-
-        // Console.WriteLine(goalNode.depth);
+        //Return path
         return path.ToArray();
     }
 }
