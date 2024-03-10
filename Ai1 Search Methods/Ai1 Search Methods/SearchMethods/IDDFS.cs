@@ -8,7 +8,7 @@ public class IDDFS() : SearchMethod()
     const int DepthStepSize = 3; //Note: depth is counted up from zero.
 
 
-    //Search exhaustively to a depth, then increase depth and restart search
+    //Search exhaustively with dfs to a depth, then increase depth and restart search
     public override string[] RunSearch(string start, string goal)
     {
         if (start == goal)
@@ -50,7 +50,7 @@ public class IDDFS() : SearchMethod()
                     //If this is the first child
                     if (!addedNodes)
                         //Remove the parent from leafNodes
-                        leafNodes.RemoveLast();
+                        leafNodes.Remove(curNode);
                     
                     //Add node
                     addedNodes = true;
@@ -72,6 +72,8 @@ public class IDDFS() : SearchMethod()
             else
                 //If no node was added step back
                 curNode = curNode.Previous;
+            
+            // Console.WriteLine($"Name: {curNode?.Value.Name} Depth: {curNode?.Value.depth}");
         }
 
         // Build and return path to goal

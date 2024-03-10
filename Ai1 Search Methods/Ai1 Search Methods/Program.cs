@@ -1,4 +1,5 @@
-﻿using System.Collections.Frozen;
+﻿using System.Collections;
+using System.Collections.Frozen;
 using System.Diagnostics;
 using System.Numerics;
 using Ai1_Search_Methods.SearchMethods;
@@ -19,40 +20,61 @@ internal class Program
     };
 
     static void Main(string[] args) => new Program().RunMain();
+
     void RunMain()
     {
         Console.Clear();
-        Console.Write("Hello, search methods!\nLoading datafiles...");
+        Console.Write("Hello, search methods!\nPress [enter] to begin.");
+        Console.ReadLine();
+
+        Console.Write("Loading datafiles...");
         LoadDataFiles();
         Console.WriteLine("Done");
-        
-        
+
+
         var cityNames = coordinates.Keys.Sort();
         var selectCityPrompt = new SelectionPrompt<string>().AddChoices(cityNames);
-        
-        //Pre-warm the jit so the code runs faster.
-        WarmJit();
 
+        //Pre-warm the jit so the code runs faster.
+#if !DEBUG
+        WarmJit();
+#endif
+        // RunEveryOption(); // DEBUG make sure every search can finish
+        
         do
         {
-            Console.WriteLine();
+            
+            Console.WriteLine("----------------------------------------");
             string startCity = AnsiConsole.Prompt(selectCityPrompt.Title("Choose starting city:"));
             string goalCity = AnsiConsole.Prompt(selectCityPrompt.Title("Choose goal city:"));
 
             var searchMethodPrompt = new SelectionPrompt<string>()
-                .AddChoices(searchMethods.Keys)
+                .AddChoices(searchMethods.Keys).AddChoices("All methods")
                 .Title("Choose search Method:");
             var searchMethodName = AnsiConsole.Prompt(searchMethodPrompt);
 
 
-            TestSearchMethod(searchMethodName, startCity, goalCity);
-            
+            if(searchMethodName != "All methods")
+                TestSearchMethod(searchMethodName, startCity, goalCity);
+            else
+            {
+                var colors = new Stack<ConsoleColor>(Enum.GetValues<ConsoleColor>().Reverse().ToArray());
+                colors.Pop(); // Remove dark blue
+                foreach (var searchName in searchMethods.Keys)
+                {
+                    Console.ForegroundColor = colors.Pop();
+                    TestSearchMethod(searchName, startCity, goalCity);
+                    Console.WriteLine();
+                    Console.ResetColor();
+                }
+            }
+
         } while ("yes" == AnsiConsole.Prompt(
                      new SelectionPrompt<string>()
                          .Title("\nStart another search?")
                          .AddChoices(["yes", "no"])));
-        
-        
+
+
         Console.Clear();
         Console.WriteLine("Process exited...");
         Console.ReadLine();
@@ -69,7 +91,7 @@ internal class Program
         Console.WriteLine($"Summary of {searchMethodName} from {startCity} to {goalCity}:");
         Console.WriteLine($"Time elapsed: {stopwatch.Elapsed.TotalMilliseconds} ms");
         Console.WriteLine("Path found: " + string.Join("->", resultPath));
-        if (isPathValid(resultPath, out List<(string,string)> invalidConnections))
+        if (isPathValid(resultPath, out List<(string, string)> invalidConnections))
             Console.WriteLine($"Total path length: {calculatePathLength(resultPath)}\u00b0");
         else
             Console.WriteLine($"Path has invalid connections: {string.Join("; ", invalidConnections)}");
@@ -83,7 +105,7 @@ internal class Program
         return length;
     }
 
-    bool isPathValid(string[] cities, out List<(string,string)> invalidConnections)
+    bool isPathValid(string[] cities, out List<(string, string)> invalidConnections)
     {
         invalidConnections = [];
         bool pathValid = true;
@@ -92,7 +114,7 @@ internal class Program
         {
             if (!adjacencies[cities[i - 1]].Contains(cities[i]))
                 pathValid = false;
-            invalidConnections.Add((cities[i - 1],cities[i]));
+            invalidConnections.Add((cities[i - 1], cities[i]));
         }
 
         return pathValid;
@@ -147,10 +169,26 @@ internal class Program
         // For each search method
         foreach (var method in searchMethods)
         {
-            //Run a search and discard the result
+            //Run an arbitrary search and discard the result
             _ = method.Value.RunSearch("Leon", "Manhattan");
         }
+
         Console.WriteLine("Done");
+    }
+    
+    void RunEveryOption()
+    {
+        Console.Write("Running ever option...");
+        // For each search method
+        foreach (var method in searchMethods)
+        {
+            Console.WriteLine($"Begin {method.Key}");
+            foreach (var start in coordinates.Keys)
+                foreach (var goal in coordinates.Keys)
+                    _ = method.Value.RunSearch(start, goal);
+        }
+
+        Console.WriteLine("Test Complete");
     }
 }
 
