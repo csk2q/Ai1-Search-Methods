@@ -132,6 +132,7 @@ class StarNode()
             Name = name,
             Parent = this,
             depth = depth + 1,
+            costToThisNode = this.costToThisNode + SearchMethod.distanceBetween(Name, name),
         };
         Children.Add(node);
         return node;
